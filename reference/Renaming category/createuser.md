@@ -13,3 +13,8 @@ hidden: false
 `}</HTMLBlock>
 
 ## Does this show up?
+
+Im adding additional content here with a list.
+1. new
+2. content
+3. Added
