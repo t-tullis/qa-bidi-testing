@@ -7,3 +7,5 @@ metadata:
 ---
 Another test page created in the UI
 Updating this page from GitLab.
+<br />
+Adding more content to this page to see if this causes a delay.
