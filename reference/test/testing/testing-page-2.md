@@ -6,3 +6,4 @@ metadata:
   robots: index
 ---
 Another test page created in the UI
+Updating this page from GitLab.
