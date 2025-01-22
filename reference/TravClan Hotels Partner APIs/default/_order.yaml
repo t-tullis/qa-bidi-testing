@@ -1,11 +1,11 @@
 - getapiv1locationssearch
 - postapiv2hotelssearch
 - getapiv1locations328959
-- getapiv1hotelshotelidstaticcontent
 - postapiv1hotelsitineraries
 - postapiv2hotelsitineraries
-- postapiv1hotelsitinerariesitinerarycodeselectroomrates
-- postapiv1hotelsitinerariesitinerarycoderoomsallocations
-- getapiv1hotelsitinerariesitinerarycode
-- postapiv1hotelsitinerariesitinerarycodebook
-- getapiv1hotelsitinerariesitinerarycodecheckprice
+- getapiv1hotels39748312staticcontent
+- postapiv1hotelsitinerariesitrf0mcselectroomrates
+- postapiv1hotelsitinerariesitrf0mcroomsallocations
+- getapiv1hotelsitinerariesitrf0mc
+- postapiv1hotelsitinerariesitrf0mcbook
+- getapiv1hotelsitinerariesitrf0mccheckprice

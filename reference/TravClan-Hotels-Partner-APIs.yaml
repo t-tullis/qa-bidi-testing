@@ -1,449 +1,549 @@
-openapi: 3.0.0
 info:
-  title: TravClan Hotels Partner APIs
-  version: 1.0.0
-servers:
-  - url: http://{{hotels_domain}}
-paths:
-  /api/v1/locations/search/:
-    get:
-      tags:
-        - default
-      summary: Hotel/City Auto Suggest
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: searchString
-          in: query
-          schema:
-            type: string
-          example: goa
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v2/hotels/search:
-    post:
-      tags:
-        - default
-      summary: Search Hotels
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                checkIn: "2024-10-20"
-                checkOut: "2024-10-22"
-                filterBy:
-                  freeBreakfast: false
-                  isRefundable: false
-                  subLocationIds: null
-                  ratings: null
-                  facilities: null
-                  type: null
-                  tags: null
-                  reviewRatings: null
-                nationality: IN
-                occupancies:
-                  - numOfAdults: 2
-                    childAges: []
-                hotelId: null
-                locationId: 328959
-                page: 1
-                traceId: null
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/locations/328959:
-    get:
-      tags:
-        - default
-      summary: Get Sub-locations
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: getSublocations
-          in: query
-          schema:
-            type: boolean
-          example: "true"
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/{hotel_id}/static-content:
-    get:
-      tags:
-        - default
-      summary: Hotel Static Content
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: hotel_id
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/itineraries:
-    post:
-      tags:
-        - default
-      summary: Create Itinerary - Ad-hoc
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                hotelId: "38906780"
-                checkIn: "2024-09-20"
-                checkOut: "2024-09-22"
-                occupancies:
-                  - numOfAdults: 2
-                nationality: IN
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v2/hotels/itineraries:
-    post:
-      tags:
-        - default
-      summary: Create Itinerary - Sequential
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                traceId: "{{trace_id}}"
-                hotelId: "{{hotel_id}}"
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/itineraries/{itinerary_code}/select-roomrates:
-    post:
-      tags:
-        - default
-      summary: Room Rates Selection
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                roomsAndRateAllocations:
-                  - rateId: "{{rate_id}}"
-                    roomId: "{{room_id}}"
-                    occupancy:
-                      adults: 2
-                traceId: "{{trace_id}}"
-                recommendationId: "{{recommendation_id}}"
-                items:
-                  - code: "{{item_code}}"
-                    type: HOTEL
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: itinerary_code
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/itineraries/{itinerary_code}/rooms-allocations:
-    post:
-      tags:
-        - default
-      summary: Guest - Room Allocation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                traceId: "{{trace_id}}"
-                roomsAllocations:
-                  - rateId: "{{rate_id}}"
-                    roomId: "{{room_id}}"
-                    guests:
-                      - title: Mr
-                        firstName: FirstName
-                        lastName: LastName
-                        isLeadGuest: true
-                        type: adult
-                        email: testmail@xyz.com
-                        isdCode: "91"
-                        contactNumber: "1234567890"
-                        panCardNumber: null
-                        passportNumber: null
-                        passportExpiry: null
-                specialRequests: null
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: itinerary_code
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/itineraries/{itinerary_code}/:
-    get:
-      tags:
-        - default
-      summary: Get Itinerary Details
-      parameters:
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: traceId
-          in: query
-          schema:
-            type: string
-          example: "{{trace_id}}"
-        - name: guestRules
-          in: query
-          schema:
-            type: boolean
-          example: "true"
-        - name: searchRequestLog
-          in: query
-          schema:
-            type: boolean
-          example: "true"
-        - name: staticContent
-          in: query
-          schema:
-            type: boolean
-          example: "true"
-        - name: itinerary_code
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/itineraries/{itinerary_code}/book:
-    post:
-      tags:
-        - default
-      summary: Book Hotel
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                traceId: "{{trace_id}}"
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: itinerary_code
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-  /api/v1/hotels/itineraries/{itinerary_code}/check-price/:
-    get:
-      tags:
-        - default
-      summary: Check-Price
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-          example: "{{authorization}}"
-        - name: source
-          in: header
-          schema:
-            type: string
-          example: website
-        - name: Authorization-Type
-          in: header
-          schema:
-            type: string
-          example: external-service
-        - name: traceId
-          in: query
-          schema:
-            type: string
-          example: "{{trace_id}}"
-        - name: itinerary_code
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
+  _postman_id: 1045ce2e-685a-4cc5-acf5-5ecc21177ba0
+  name: TravClan Hotels Partner APIs
+  schema: https://schema.getpostman.com/json/collection/v2.1.0/collection.json
+  _exporter_id: '632475'
+item:
+  - name: Hotel/City Auto Suggest
+    request:
+      method: GET
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+        - key: ''
+          value: ''
+          type: text
+          disabled: true
+      url:
+        raw: '{{hotels_domain}}/api/v1/locations/search/?searchString=goa'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - locations
+          - search
+          - ''
+        query:
+          - key: searchString
+            value: goa
+    response: []
+  - name: Search Hotels
+    request:
+      method: POST
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: |-
+          {
+              "checkIn": "2024-10-20",
+              "checkOut": "2024-10-22",
+              "filterBy": {
+                  "freeBreakfast": false,
+                  "isRefundable": false,
+                  "subLocationIds": null,
+                  "ratings": null,
+                  "facilities": null,
+                  "type": null,
+                  "tags": null,
+                  "reviewRatings": null
+              },
+              "nationality": "IN",
+              "occupancies": [
+                  {
+                      "numOfAdults": 2,
+                      "childAges": []
+                  }
+              ],
+              "hotelId": null,
+              "locationId": 328959,
+              "page": 1,
+              "traceId": null
+          }
+        options:
+          raw:
+            language: json
+      url:
+        raw: '{{hotels_domain}}/api/v2/hotels/search'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v2
+          - hotels
+          - search
+    response: []
+  - name: Get Sub-locations
+    request:
+      method: GET
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+      url:
+        raw: '{{hotels_domain}}/api/v1/locations/328959?getSublocations=true'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - locations
+          - '328959'
+        query:
+          - key: getSublocations
+            value: 'true'
+    response: []
+  - name: Hotel Static Content
+    protocolProfileBehavior:
+      disableBodyPruning: true
+    request:
+      method: GET
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: ''
+        options:
+          raw:
+            language: json
+      url:
+        raw: '{{hotels_domain}}/api/v1/hotels/{{hotel_id}}/static-content'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - '{{hotel_id}}'
+          - static-content
+    response: []
+  - name: Create Itinerary - Ad-hoc
+    request:
+      method: POST
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: |-
+          {
+              "hotelId": "38906780",
+              "checkIn": "2024-09-20",
+              "checkOut": "2024-09-22",
+              "occupancies": [
+                  {
+                      "numOfAdults": 2
+                  }
+
+              ],
+              "nationality": "IN"
+          }
+        options:
+          raw:
+            language: json
+      url:
+        raw: '{{hotels_domain}}/api/v1/hotels/itineraries'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+    response: []
+  - name: Create Itinerary - Sequential
+    request:
+      method: POST
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: |-
+          {
+              "traceId": "{{trace_id}}",
+              "hotelId": "{{hotel_id}}"
+          }
+        options:
+          raw:
+            language: json
+      url:
+        raw: '{{hotels_domain}}/api/v2/hotels/itineraries'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v2
+          - hotels
+          - itineraries
+    response: []
+  - name: Room Rates Selection
+    request:
+      method: POST
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: |-
+          {
+              "roomsAndRateAllocations": [
+                  {
+                      "rateId": "{{rate_id}}",
+                      "roomId": "{{room_id}}",
+                      "occupancy": {
+                          "adults": 2
+                      }
+                  }
+              ],
+              "traceId": "{{trace_id}}",
+              "recommendationId": "{{recommendation_id}}",
+              "items": [
+                  {
+                      "code": "{{item_code}}",
+                      "type": "HOTEL"
+                  }
+              ]
+          }
+        options:
+          raw:
+            language: json
+      url:
+        raw: >-
+          {{hotels_domain}}/api/v1/hotels/itineraries/{{itinerary_code}}/select-roomrates
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+          - '{{itinerary_code}}'
+          - select-roomrates
+    response: []
+  - name: Guest - Room Allocation
+    request:
+      method: POST
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: |-
+          {
+              "traceId": "{{trace_id}}",
+              "roomsAllocations": [
+                  {
+                     "rateId": "{{rate_id}}",
+                      "roomId": "{{room_id}}",
+                      "guests": [
+                          {
+                              "title": "Mr",
+                              "firstName": "FirstName",
+                              "lastName": "LastName",
+                              "isLeadGuest": true,
+                              "type": "adult",
+                              "email": "testmail@xyz.com",
+                              "isdCode": "91",
+                              "contactNumber": "1234567890",
+                              "panCardNumber": null,
+                              "passportNumber": null,
+                              "passportExpiry": null
+                          }
+                      ]
+                  }
+              ],
+              "specialRequests": null
+          }
+        options:
+          raw:
+            language: json
+      url:
+        raw: >-
+          {{hotels_domain}}/api/v1/hotels/itineraries/{{itinerary_code}}/rooms-allocations
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+          - '{{itinerary_code}}'
+          - rooms-allocations
+    response: []
+  - name: Get Itineraray Details
+    request:
+      method: GET
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      url:
+        raw: >-
+          {{hotels_domain}}/api/v1/hotels/itineraries/{{itinerary_code}}/?traceId={{trace_id}}
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+          - '{{itinerary_code}}'
+          - ''
+        query:
+          - key: guestRules
+            value: 'true'
+            disabled: true
+          - key: availableRates
+            value: 'true'
+            disabled: true
+          - key: searhRequestLog
+            value: 'true'
+            disabled: true
+          - key: staticContent
+            value: 'true'
+            disabled: true
+          - key: guestCollectionData
+            value: 'true'
+            disabled: true
+          - key: traceId
+            value: '{{trace_id}}'
+    response: []
+  - name: Book Hotel
+    request:
+      method: POST
+      header:
+        - key: Authorization
+          value: '{{authorization}}'
+          type: text
+        - key: Authorization-Type
+          value: external-service
+          type: text
+        - key: source
+          value: website
+          type: text
+      body:
+        mode: raw
+        raw: |-
+          {
+              "traceId": "{{trace_id}}"
+          }
+        options:
+          raw:
+            language: json
+      url:
+        raw: '{{hotels_domain}}/api/v1/hotels/itineraries/{{itinerary_code}}/book'
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+          - '{{itinerary_code}}'
+          - book
+    response: []
+  - name: Get Itinerary Details
+    request:
+      method: GET
+      header:
+        - key: authorization
+          value: '{{authorization}}'
+        - key: Authorization-Type
+          value: external-service
+        - key: source
+          value: website
+          type: text
+      url:
+        raw: >-
+          {{hotels_domain}}/api/v1/hotels/itineraries/{{itinerary_code}}/?traceId={{trace_id}}&guestRules=true&searchRequestLog=true&staticContent=true
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+          - '{{itinerary_code}}'
+          - ''
+        query:
+          - key: traceId
+            value: '{{trace_id}}'
+          - key: guestRules
+            value: 'true'
+          - key: searchRequestLog
+            value: 'true'
+          - key: staticContent
+            value: 'true'
+    response: []
+  - name: Check-Price
+    request:
+      method: GET
+      header:
+        - key: Accept
+          value: application/json, text/plain, */*
+          disabled: true
+        - key: Accept-Language
+          value: en-US,en-IN;q=0.9,en;q=0.8,hi;q=0.7
+          disabled: true
+        - key: Authorization
+          value: '{{authorization}}'
+        - key: Authorization-Mode
+          value: AWSCognito
+          disabled: true
+        - key: Connection
+          value: keep-alive
+          disabled: true
+        - key: Origin
+          value: https://www.travclan.com
+          disabled: true
+        - key: Referer
+          value: https://www.travclan.com/
+          disabled: true
+        - key: Sec-Fetch-Dest
+          value: empty
+          disabled: true
+        - key: Sec-Fetch-Mode
+          value: cors
+          disabled: true
+        - key: Sec-Fetch-Site
+          value: same-site
+          disabled: true
+        - key: User-Agent
+          value: >-
+            Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
+            Gecko) Chrome/127.0.0.0 Safari/537.36
+          disabled: true
+        - key: sec-ch-ua
+          value: '"Not)A;Brand";v="99", "Google Chrome";v="127", "Chromium";v="127"'
+          disabled: true
+        - key: sec-ch-ua-mobile
+          value: '?0'
+          disabled: true
+        - key: sec-ch-ua-platform
+          value: '"Linux"'
+          disabled: true
+        - key: source
+          value: website
+        - key: Authorization-Type
+          value: external-service
+          type: text
+      url:
+        raw: >-
+          {{hotels_domain}}/api/v1/hotels/itineraries/{{itinerary_code}}/check-price/?traceId={{trace_id}}
+        host:
+          - '{{hotels_domain}}'
+        path:
+          - api
+          - v1
+          - hotels
+          - itineraries
+          - '{{itinerary_code}}'
+          - check-price
+          - ''
+        query:
+          - key: traceId
+            value: '{{trace_id}}'
+    response: []
+event:
+  - listen: prerequest
+    script:
+      type: text/javascript
+      exec:
+        - ''
+  - listen: test
+    script:
+      type: text/javascript
+      exec:
+        - ''
+variable:
+  - key: authorization
+    value: >-
+      Bearer
+      eyJraWQiOiJ2dXd6Z252U2RuRG5MeEhTRjF4XC9DZzhjQUg4VDhyVVdPalBvWG5BSDZ4UT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhODBjMzg0ZS1lZmIwLTQ4N2ItYmE1My03ZGQyNzI4YTc3NDYiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xXzR1VlNnS2s2VSIsImNsaWVudF9pZCI6IjlqNzBlcjhjZG03bWRxN2xycnJva2ZmcG8iLCJvcmlnaW5fanRpIjoiMDczMjcyOTItZDJkZC00YzFhLTkxYTgtMjI3NTI1NzNhMWM3IiwiZXZlbnRfaWQiOiIyZTAyMDZjZS01MDA1LTRjOTctOTgwNS1jYzBiYTE4NDAwYWUiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNzI0MjIwNTA2LCJleHAiOjE3MjQzMDY5MDYsImlhdCI6MTcyNDIyMDUwNiwianRpIjoiOWRjZTdkZjMtZGU3Yi00MGExLTg5NjYtYTFhZGE3MGZiZjBiIiwidXNlcm5hbWUiOiJjZTYwZDc4MTYifQ.HrXEucChHiZ6rrT9ftq7Q2bZZmHaFUMaB5MWwUYBOpQw0nTiCuc-7R-8ZNNU1z6MmMoNq2aS7hJjCLP_czd0Cows4N4WG0pI1LEI90g8s1dZbyJVSr2nvBJKBDU2rNG87dH6TQE1bPnLFRo4z-_lK_1hBhA1FKkr8ERqHqV8dIiuj7hDkaTJp_jPyUHj9s40P_iewRaHvfZw8GPe42y4U3mpeyUTd4va8dHCdwd9HWswt1g5JFTHrdGeTNriqPWhpqtFI-Sc2v55JhUs0Ucs1F2_yXyzKTOOPu8zVStxWko0nwQJSphFH4p8HHMO2UM4aKpxioFJIcOj1_9oCKiyiA
+    type: string
+  - key: hotels_domain
+    value: https://hotel-api-sandbox.travclan.com
+  - key: trace_id
+    value: 1f3f40c6-6f14-4ff2-8271-1a32a40a6f2c
+    type: string
+  - key: hotel_id
+    value: '39748312'
+    type: string
+  - key: itinerary_code
+    value: itrf0mc
+    type: string
+  - key: item_code
+    value: itmf0m8
+    type: string
+  - key: recommendation_id
+    value: f8df8370-8b92-40ca-b0f1-1d9ef7be682a
+    type: string
+  - key: rate_id
+    value: 120fef00-790e-4ffa-b826-c345e2b44209
+    type: string
+  - key: room_id
+    value: 23946e68-6856-41ea-b0b2-963ccccf59a9
+    type: string
