@@ -1,4 +1,0 @@
----
-title: Setting
-hidden: false
----
