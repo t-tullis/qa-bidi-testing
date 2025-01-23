@@ -1,0 +1,454 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ex-Human",
+    "description": "# Ex-Human\n\nEx-Human is a chatbot that can talk to you like a human.\n\nCurrently we host several services here:\n\n- Chatbot (for B2B clients)\n- Chat images manager (image generation for chats)\n- Admin service (adding and deactivating B2B clients, checking stats)\n- Animations (lipsync, idle animation)\n- Moderation (get various safety labels)\n",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.exh.ai",
+      "description": "Production environment"
+    }
+  ],
+  "paths": {
+    "/chatbot/v3/response": {
+      "post": {
+        "tags": ["chatbot"],
+        "summary": "Get multimodal chat response",
+        "description": "Multimodal chat response endpoint.\n\nIt can be used to support engaging conversations with both text and image responses.",
+        "operationId": "get_response_chatbot_v3_response_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatbotV3PayloadSchema"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatbotV3ResponseSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CharacterProfile": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id",
+            "description": "Unique identifier. Provide user's id and bot's id to enable Long-Term Memory - recall of conversation beyond 30 messages",
+            "examples": ["1234567890"]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name",
+            "examples": ["Sam"]
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 8000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Detailed description of your character. It can include traits, history, mannerisms, backstory, things they want to talk about, etc.",
+            "examples": ["I'm a big fan of AI."]
+          },
+          "appearance": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Appearance",
+            "description": "Description of how your character looks like. Some ideas to specify in this field: gender,ethnicity, hair color, body type (slim, athletic, curvy, etc.), age, tattoos, and eye color. This field will affect the generated image and image prompt the most.",
+            "examples": ["39 yo, white, short black hair, slim"]
+          },
+          "pronoun": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Pronoun"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": ["he/him"]
+          }
+        },
+        "type": "object",
+        "required": ["name"],
+        "title": "CharacterProfile"
+      },
+      "ChatV3ImageSettings": {
+        "properties": {
+          "identity_image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identity Image Url",
+            "description": "Url to the image with bot's identity picture.",
+            "examples": [
+              "https://exh-data.s3.us-west-2.amazonaws.com/cv/default_bots_metadata/v3/Elon%20Musk/avatar_256.jpg"
+            ]
+          },
+          "style": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImageStyle"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Artistic style for generating the gallery image.If not specified, the style is automatically detected based on the identity image."
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Gender"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Specify gender to override autodetection. Default: None (autodetection)."
+          },
+          "skin_color": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SkinColor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Skin color to override autodetection. Default: None (autodetection)."
+          },
+          "allow_nsfw": {
+            "type": "boolean",
+            "title": "Allow Nsfw",
+            "description": "For enabling NSFW image support, set the flag to 'True'; otherwise, set it to 'False'.",
+            "default": true
+          },
+          "usage_mode": {
+            "$ref": "#/components/schemas/ImageUsageMode",
+            "default": "off"
+          },
+          "return_bs64": {
+            "type": "boolean",
+            "title": "Return Bs64",
+            "description": "If return_bs64 is set to True, a base64-endcoded generated image and the image prompt will be provided. If set to False, only the text prompt describing the image will be returned.",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "ChatV3ImageSettings"
+      },
+      "ChatV3Settings": {
+        "properties": {
+          "allow_nsfw": {
+            "type": "boolean",
+            "title": "Allow Nsfw",
+            "description": "For enabling NSFW bot responses support, set the flag to 'True'; otherwise, set it to 'False'.",
+            "default": true
+          },
+          "tasks": {
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 5,
+            "minItems": 0,
+            "title": "Tasks",
+            "description": "Modifications for LLM instruction. Maximum 5 tasks.",
+            "examples": [
+              [
+                "You must never mention anything related to cryptocurrency.",
+                "Use emojis in responses.",
+                "Suggest user to buy subscription, if it fits in the context.",
+                "Say user that photo's will not be provided."
+              ]
+            ]
+          },
+          "enable_memory": {
+            "type": "boolean",
+            "title": "Enable Memory",
+            "description": "A flag that determines whether the long-term memory feature is used. If it's set to True or not provided, and both bot_profile.id and user_profile.id are also provided, the service will store and utilize memory of the conversation. If it's set to False, no memory of past events beyond the current context will be available. Memory starts accumulating after 20 messages in a chat.",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "ChatV3Settings"
+      },
+      "ChatbotV3PayloadSchema": {
+        "properties": {
+          "context": {
+            "items": {
+              "$ref": "#/components/schemas/MessageWithImagePrompt"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 0,
+            "title": "Context",
+            "description": "The context of the conversation. Set to empty list to get bot's greeting. Maximum 30 messages.",
+            "examples": [
+              [
+                {
+                  "image_prompt": "Man in the mountains",
+                  "message": "Hi, how are you?",
+                  "turn": "bot"
+                },
+                {
+                  "message": "I'm fine, thanks. How is it going with you?",
+                  "turn": "user"
+                }
+              ]
+            ]
+          },
+          "bot_profile": {
+            "$ref": "#/components/schemas/CharacterProfile"
+          },
+          "user_profile": {
+            "$ref": "#/components/schemas/CharacterProfile"
+          },
+          "chat_settings": {
+            "$ref": "#/components/schemas/ChatV3Settings",
+            "description": "Chat settings for the chatbot",
+            "default": {
+              "allow_nsfw": true,
+              "tasks": [],
+              "enable_memory": true
+            }
+          },
+          "image_settings": {
+            "$ref": "#/components/schemas/ChatV3ImageSettings",
+            "description": "Image settings for the chatbot",
+            "default": {
+              "allow_nsfw": true,
+              "usage_mode": "off",
+              "return_bs64": true
+            }
+          }
+        },
+        "type": "object",
+        "required": ["bot_profile"],
+        "title": "ChatbotV3PayloadSchema"
+      },
+      "ChatbotV3ResponseSchema": {
+        "properties": {
+          "response": {
+            "type": "string",
+            "title": "Response"
+          },
+          "image_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImageV3ResponseSchema"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": ["response"],
+        "title": "ChatbotV3ResponseSchema"
+      },
+      "Gender": {
+        "type": "string",
+        "enum": ["man", "woman", "nonbinary"],
+        "title": "Gender",
+        "description": "Specify gender to override autodetection. Default: None (autodetection)."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ImageStyle": {
+        "type": "string",
+        "enum": ["realistic", "anime"],
+        "title": "ImageStyle",
+        "description": "Artistic style for generating the gallery image.\nIf not specified, the style is automatically detected based on the identity image."
+      },
+      "ImageUsageMode": {
+        "type": "string",
+        "enum": ["force", "on_user_request", "off"],
+        "title": "ImageUsageMode",
+        "description": "The image usage mode. Determines how images are handled in the chat.\nIf set to 'off', images will not be used.\nIf set to 'on_user_request', images will be provided only when requested by the user.\nIf set to 'force', images will always be provided."
+      },
+      "ImageV3ResponseSchema": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt"
+          },
+          "bs64": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bs64"
+          }
+        },
+        "type": "object",
+        "required": ["prompt"],
+        "title": "ImageV3ResponseSchema"
+      },
+      "MessageWithImagePrompt": {
+        "properties": {
+          "turn": {
+            "type": "string",
+            "title": "Turn",
+            "description": "The turn of the message (`bot` or `user`)",
+            "examples": ["bot"]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Message"
+          },
+          "image_prompt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Prompt",
+            "description": "The prompt for the image that was generated on this turn."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["turn", "message"],
+        "title": "MessageWithImagePrompt"
+      },
+      "Pronoun": {
+        "type": "string",
+        "enum": ["he/him", "she/her", "they/them"],
+        "title": "Pronoun"
+      },
+      "SkinColor": {
+        "type": "string",
+        "enum": ["pale", "white", "tanned", "black"],
+        "title": "SkinColor",
+        "description": "Skin color to override autodetection. Default: None (autodetection)."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "x-readme": {
+    "explorer-enabled": true,
+    "proxy-enabled": true
+  }
+}
