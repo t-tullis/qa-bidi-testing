@@ -5,8 +5,6 @@ hidden: false
 metadata:
   robots: index
 ---
-<a id="top" />
-
 Tensor9 connects to your **origin stack** and continuously synchronizes it to customer **appliances**. In this guide, we’ll walk you through how to set up an appliance, and see your app running in it.
 
 When you're done with this guide, your stack will be running in a Tensor9 appliance, and you'll be able to send  requests to its private endpoints:
