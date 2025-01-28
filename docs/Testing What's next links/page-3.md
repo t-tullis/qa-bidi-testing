@@ -5,8 +5,6 @@ hidden: false
 metadata:
   robots: index
 ---
-<a id="top" />
-
 Tensor9 maintains a **digital twin** of each **stack** running in a customer **appliance**.  Your digital twin is your window into the operational state of its corresponding customer appliance.  You observe that customer's logs, metrics, and hardware failures through its digital twin, which Tensor9 continuously synchronizes.
 
 In this guide, we’ll walk you through how to observe logs, metrics and hardware failures through a digital twin.
