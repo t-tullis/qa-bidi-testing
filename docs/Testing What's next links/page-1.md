@@ -5,8 +5,6 @@ hidden: false
 metadata:
   robots: index
 ---
-<a id="top" />
-
 Tensor9 connects to your **origin stack** and continuously synchronizes it to customer **appliances**. In this guide, we’ll walk you through how to connect your CloudFormation origin stack to Tensor9.
 
 When you're done with this guide, you'll have something that looks like this:
