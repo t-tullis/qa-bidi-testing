@@ -1,0 +1,451 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "title": "Test V3 Sync To Multiple Versions",
+    "license": {
+      "name": "ISC"
+    },
+    "description": "Lets see what appears? is anything changing?"
+  },
+  "servers": [
+    {
+      "url": "testserver1.com"
+    },
+    {
+      "url": "testserver2.com"
+    }
+  ],
+  "security": [
+    {},
+    {
+      "testBearer": []
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Retrieves All Users(TESTING SYNC)",
+        "operationId": "testingSlugChange",
+        "description": "\n\n| Type | Reason | Card Number (PAN) | Card Object Status |\n| ---- | ------ | ----------------- | ------------------ |\n| Digital | Fraud, Lost, Stolen | New | `status=Verified` |\n| Digital | Renewal | Same, with new expiration date and CVV2 | `status=Verified` |\n| Digital + physical | Physical damage | Same | `status=Verified` unless program requires verification for reissues then `status=DigitalActivePhysicalPending` |\n| Digital + physical | Fraud, Lost, Stolen | New | `status=DigitalActivePhysicalPending` |\n| Digital + physical | Renewal | Same, with new expiration | `status=ReissuePendingVerification` |\n| Physical | Physical Damage | Same | `status=Verified` unless program requires verification for reissues then `status=PendingVerification` |\n| Physical | Fraud, Lost, Stolen | New | `status=PendingVerification` |\n| Physical | Renewal | Same, with new expiration date and CVV2 | `status=ReissuePendingVerification` |\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "settings": {
+                    "description": "Updates the settings of an app.",
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "examples": {
+                  "example 1": {
+                    "value": {
+                      "testing": "test 1",
+                      "testing-1": "test 2",
+                      "testing-2": "test 3",
+                      "testing-3": "test 4"
+                    }
+                  },
+                  "example 2": {
+                    "value": {
+                      "testing": "test 1",
+                      "testing-1": "test 2",
+                      "testing-2": "test 3",
+                      "testing-3": "test 4"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "curl",
+              "code": "curl -X POST https://api.example.com/v2/alert",
+              "name": "Custom cURL snippet",
+              "install": "brew install curl"
+            },
+            {
+              "language": "php",
+              "code": "<?php echo \"This is our custom PHP code snippet.\"; ?>",
+              "name": "Custom PHP snippet"
+            }
+          ]
+        }
+      }
+    },
+    "/users/update/": {
+      "put": {
+        "tags": [],
+        "description": "Updates the specific user by email: <<glossary:testing>>. All fields aren't required to update the user object [Testing glossary term]",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "test",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updates a user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Testing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Glossary test: <<glossary:testing>>"
+          },
+          "404": {
+            "description": "The User you are trying to update doesn't exist"
+          }
+        }
+      }
+    },
+    "/users/create/{version}?": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Creates a User (Test Change)",
+        "operationId": "createUser",
+        "description": "Creates a new user(TESTING RESYNC)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "testing",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "x-orgid",
+            "schema": {
+              "type": "string"
+            },
+            "allowReserved": true,
+            "required": true,
+            "description": "The email used to fetch the User to update"
+          }
+        ],
+        "requestBody": {
+          "description": "Creates a new user object(TICKET ENDPOINT)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "Test Example": {
+                  "value": {
+                    "from": "20171011",
+                    "to": "20171130",
+                    "daily": false,
+                    "channel": ["InApp"],
+                    "delivery": ["inaction", "action"],
+                    "status": ["completed"],
+                    "message_type": ["single"],
+                    "label": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User Created! (click to see more...)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Update"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Test"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error creating user password and email required"
+          }
+        }
+      }
+    },
+    "/users/{email}": {
+      "get": {
+        "tags": ["Users"],
+        "operationId": "Test-slug",
+        "description": "Returns a user by a specific email",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "description": "The email that needs to be used to fetch. Use test2@gmail.com to test. ",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "TESTING SOMETHING",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "other_rows_ids_map": {
+                    "type": "array",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Testing something here lol",
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<response type=\"AddUser\" status=\"SUCCESS\" id=\"170e2c21-7275-4297-af24-9cd7b64f9c33\">\n    <request>\n        <param name=\"country\" value=\"124\"/>\n        <param name=\"firstname\" value=\"Test\"/>\n        <param name=\"address-state\" value=\"AB\"/>\n        <param name=\"initials\" value=\"I\"/>\n        <param name=\"active\" value=\"yes\"/>\n        <param name=\"address-country\" value=\"Canada\"/>\n        <param name=\"lastname\" value=\"User\"/>\n        <param name=\"address-postcode\" value=\"T3T3T3\"/>\n        <param name=\"hmac\" value=\"Y6Fet6+fWdCOh5KdvGJyL+FTyb0=\"/>\n        <param name=\"address-city\" value=\"Calgary\"/>\n        <param name=\"address-street\" value=\"611 Meredith Rd\"/>\n        <param name=\"user\" value=\"TestUser\"/>\n        <param name=\"email\" value=\"clesperance@benevity.com\"/>\n    </request>\n    <messages/>\n    <content type=\"text/xml; charset=utf-8\">\n        <user id=\"GDRBKXUWSA\"/>\n    </content>\n</response>"
+              }
+            }
+          },
+          "404": {
+            "description": "User with that email does not exist"
+          }
+        }
+      }
+    },
+    "/users/delete/{email}": {
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Deletes a user",
+        "operationId": "deleteUserByEmail",
+        "description": "A variable link test here: [testing]('<<testing>>') ",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "description": "The email that needs to be used to fetch and delete. Try hitting the end point that returns all users and pick an email to delete. ",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "confidences",
+            "in": "query",
+            "description": "Include Confidence Scores in the PDF.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "JSON payload containing the delete request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "example": 1,
+                    "description": "<span style=\"color:#eab676\">The reason code for deleting the load.</span><br/><a href=\"https://truckstop.readme.io/reference/load-state-reason-codes\">Reason Codes</a>"
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "<span style=\"color:#eab676\">String comment of the delete reason.</span>"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "This is where the description of your response will go and it will populate in the area marked in your first screenshot"
+          },
+          "400": {
+            "description": "User with that email does not exist"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "testBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "description": "This is the User Object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "default": "test@email.com",
+            "description": "user's email"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "First Name",
+            "description": "Adding a description here will will have the description populate in the area marked in your second screenshot"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Last Name",
+            "description": "user's last name",
+            "nullable": false
+          },
+          "password": {
+            "type": "string",
+            "description": "user's password"
+          },
+          "Twitter handle": {
+            "type": "string",
+            "description": " twitter account of the member"
+          },
+          "Lifetime points earned": {
+            "type": "string",
+            "description": " the total points a member has earned so far"
+          },
+          "First Name": {
+            "type": "string",
+            "description": "The first name of the memeber"
+          }
+        },
+        "example": {
+          "default": {
+            "email": "test@test.com",
+            "firstName": "Terrell",
+            "lastName": "Tullis"
+          }
+        }
+      },
+      "Testing": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Update"
+          },
+          {
+            "$ref": "#/components/schemas/Test"
+          }
+        ]
+      },
+      "Update": {
+        "type": "object",
+        "title": "Business",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Glossary test <<glossary:testing>>"
+          },
+          "testingProperty": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name to update"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "User's password to update"
+          }
+        }
+      },
+      "Test": {
+        "type": "object",
+        "title": "Individual",
+        "properties": {
+          "test1": {
+            "type": "string",
+            "description": "\n `maxLength`: 1 \n `required`: true"
+          },
+          "test2": {
+            "type": "string",
+            "description": "Testing allOf 2"
+          },
+          "test3": {
+            "type": "string",
+            "description": "Testing allOf 3"
+          },
+          "link-test": {
+            "type": "string",
+            "example": {
+              "link": "https://www.google.com"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-readme": {
+    "explorer-enabled": true,
+    "samples-enabled": true,
+    "proxy-enabled": false,
+    "samples-languages": ["curl"]
+  }
+}
